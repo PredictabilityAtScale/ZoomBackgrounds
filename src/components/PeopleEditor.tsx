@@ -2,6 +2,7 @@ import type { ChangeEvent } from 'react'
 import { useMemo } from 'react'
 import type { PersonRecord, SocialLink, City } from '../types'
 import { CitySearch } from './CitySearch'
+import { TimezoneSelector } from './TimezoneSelector'
 
 interface PeopleEditorProps {
   value: PersonRecord[]
@@ -68,6 +69,14 @@ export function PeopleEditor({
     })
     console.log('📝 Updated people array:', updatedPeople.find(p => p.id === personId))
     onChange(updatedPeople)
+  }
+
+  const handleTimezoneChange = (personId: string, timezone: string) => {
+    onChange(
+      value.map((person) =>
+        person.id === personId ? { ...person, timezone } : person
+      )
+    )
   }
 
   const handleAddPerson = () => {
@@ -217,6 +226,19 @@ export function PeopleEditor({
                             handleLocationChange(person.id, location, cityData, timezone)
                           }
                           placeholder="Search for a city..."
+                        />
+                      </label>
+                    )
+                  }
+                  
+                  // Use TimezoneSelector for timezone field
+                  if (key === 'timezone') {
+                    return (
+                      <label key={key} className="field">
+                        <span>{fieldLabels[key]}</span>
+                        <TimezoneSelector
+                          value={person[key] ?? ''}
+                          onChange={(timezone) => handleTimezoneChange(person.id, timezone)}
                         />
                       </label>
                     )

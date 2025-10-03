@@ -47,7 +47,7 @@ export const defaultPeople: PersonRecord[] = [
     email: "troy@usagetap.com",
     pronouns: "he/him",
     location: "Seattle, USA",
-    timezone: "Pacific Time (UTC−07:00)",
+    timezone: "UTC-8",
     socialLinks: createSocialLinks([
       ["LinkedIn", "https://www.linkedin.com/in/troymagennis"],
       ["X", "https://x.com/t_magennis"],
@@ -60,7 +60,7 @@ export const defaultPeople: PersonRecord[] = [
     email: "chris@usagetap.com",
     pronouns: "",
     location: "San Diego, USA",
-    timezone: "Pacific Time (UTC−07:00)",
+    timezone: "UTC-8",
     socialLinks: createSocialLinks([
       ["LinkedIn", "https://www.linkedin.com/in/chrishefley"],
     ]),

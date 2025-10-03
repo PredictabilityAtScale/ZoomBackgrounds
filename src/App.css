@@ -185,13 +185,16 @@
 }
 
 .field input,
-.field textarea {
+.field textarea,
+.field select,
+.timezone-selector {
   padding: 12px 14px;
   border-radius: 14px;
   border: 1px solid rgba(148, 163, 184, 0.6);
   background: rgba(248, 250, 252, 0.7);
   font-size: 0.95rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
 }
 
 .field textarea {
@@ -200,11 +203,18 @@
 }
 
 .field input:focus,
-.field textarea:focus {
+.field textarea:focus,
+.field select:focus,
+.timezone-selector:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
   background: #ffffff;
+}
+
+.timezone-selector {
+  width: 100%;
+  cursor: pointer;
 }
 
 .logo-uploader {

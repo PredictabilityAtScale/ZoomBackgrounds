@@ -242,7 +242,7 @@ function App() {
             <a href="https://llmasaservice.io" target="_blank" rel="noopener noreferrer" className="sponsor-item">
               <img src="/android-chrome-192x192.png" alt="LLMAsAService" className="sponsor-item__logo" />
               <span className="sponsor-item__text">
-                <strong>LLMAsAService.io</strong> Full LLM gateway. Add reliable, safe and interactive AI agents to your apps and websites with full conversation logging, PII redaction, safety and dozens other features.
+                <strong>LLMAsAService.io</strong> Full LLM gateway. Add reliable, safe and interactive AI agents to your apps and websites with full conversation logging, PII redaction, safety and dozens of other features.
               </span>
             </a>
           </div>
