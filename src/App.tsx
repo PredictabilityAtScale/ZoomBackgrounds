@@ -215,6 +215,11 @@ function App() {
         <div className="app-header__main">
           <h1>Zoom Backgrounder</h1>
           <p>Create professional, mirrored backgrounds for your whole team in minutes.</p>
+          <p className="app-header__github">
+            <a href="https://github.com/PredictabilityAtScale/ZoomBackgrounds" target="_blank" rel="noopener noreferrer">
+              ⭐ Open Source on GitHub
+            </a>
+          </p>
         </div>
         <div className="sponsor-panel">
           <p className="sponsor-panel__title">Offered free, consider our products:</p>
