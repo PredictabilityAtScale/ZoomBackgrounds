@@ -706,6 +706,33 @@ button.ghost.danger:hover:enabled {
   text-decoration: underline;
 }
 
+.app-footer__founder-university {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.app-footer__founder-university:hover {
+  opacity: 0.8;
+}
+
+.app-footer__founder-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.app-footer__founder-university p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-style: italic;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

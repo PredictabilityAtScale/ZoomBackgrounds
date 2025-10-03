@@ -295,6 +295,19 @@ function App() {
           <a href="mailto:troy@predictabilityatscale.com">troy@predictabilityatscale.com</a> or{' '}
           <a href="mailto:chris@predictabilityatscale.com">chris@predictabilityatscale.com</a>
         </p>
+        <a 
+          href="https://founder.university/" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="app-footer__founder-university"
+        >
+          <img 
+            src="/Founder+University+Logo+(1500+x+450+px).webp" 
+            alt="Founder University" 
+            className="app-footer__founder-logo"
+          />
+          <p>Proudly part of Cohort 11 Founder University</p>
+        </a>
       </footer>
     </div>
   )
