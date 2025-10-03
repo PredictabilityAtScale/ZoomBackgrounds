@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react'
 import { useMemo } from 'react'
-import type { PersonRecord, SocialLink } from '../types'
+import type { PersonRecord, SocialLink, City } from '../types'
+import { CitySearch } from './CitySearch'
 
 interface PeopleEditorProps {
   value: PersonRecord[]
@@ -9,7 +10,7 @@ interface PeopleEditorProps {
   onSelect: (id: string) => void
 }
 
-const baseFieldKeys: Array<keyof Omit<PersonRecord, 'id' | 'socialLinks'>> = [
+const baseFieldKeys: Array<keyof Omit<PersonRecord, 'id' | 'socialLinks' | 'cityData'>> = [
   'fullName',
   'role',
   'email',
@@ -50,6 +51,23 @@ export function PeopleEditor({
         person.id === personId ? { ...person, [name]: fieldValue } : person
       )
     )
+  }
+
+  const handleLocationChange = (personId: string, location: string, cityData?: City, timezone?: string) => {
+    console.log('📝 handleLocationChange called:', { personId, location, cityData, timezone })
+    const updatedPeople = value.map((person) => {
+      if (person.id === personId) {
+        const updates: Partial<PersonRecord> = { location, cityData }
+        // If timezone is provided, update it in the same state change
+        if (timezone !== undefined) {
+          updates.timezone = timezone
+        }
+        return { ...person, ...updates }
+      }
+      return person
+    })
+    console.log('📝 Updated people array:', updatedPeople.find(p => p.id === personId))
+    onChange(updatedPeople)
   }
 
   const handleAddPerson = () => {
@@ -187,17 +205,35 @@ export function PeopleEditor({
                 </div>
               </div>
               <div className="person-card__fields">
-                {baseFieldKeys.map((key) => (
-                  <label key={key} className="field">
-                    <span>{fieldLabels[key]}</span>
-                    <input
-                      name={key}
-                      value={person[key] ?? ''}
-                      onChange={(event) => handleFieldChange(person.id, event)}
-                      placeholder={fieldLabels[key]}
-                    />
-                  </label>
-                ))}
+                {baseFieldKeys.map((key) => {
+                  // Use CitySearch for location field
+                  if (key === 'location') {
+                    return (
+                      <label key={key} className="field">
+                        <span>{fieldLabels[key]}</span>
+                        <CitySearch
+                          value={person[key] ?? ''}
+                          onChange={(location, cityData, timezone) =>
+                            handleLocationChange(person.id, location, cityData, timezone)
+                          }
+                          placeholder="Search for a city..."
+                        />
+                      </label>
+                    )
+                  }
+                  
+                  return (
+                    <label key={key} className="field">
+                      <span>{fieldLabels[key]}</span>
+                      <input
+                        name={key}
+                        value={person[key] ?? ''}
+                        onChange={(event) => handleFieldChange(person.id, event)}
+                        placeholder={fieldLabels[key]}
+                      />
+                    </label>
+                  )
+                })}
               </div>
               <div
                 className="person-card__social"

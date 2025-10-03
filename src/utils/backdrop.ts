@@ -1,4 +1,4 @@
-import type { BackdropRenderInput, LogoAsset } from '../types'
+import type { BackdropRenderInput, LogoAsset, PersonRecord } from '../types'
 
 const DEFAULT_RESOLUTION = {
   width: 1920,
@@ -143,6 +143,16 @@ async function drawTypography(
   companyStartY: number
 ): Promise<void> {
   const { person, company, background } = input
+  
+  if (import.meta.env.DEV) {
+    console.log('🎨 drawTypography received person:', {
+      name: person.fullName,
+      location: person.location,
+      hasCityData: !!person.cityData,
+      cityData: person.cityData
+    })
+  }
+  
   const fontScale = input.fontScale ?? 1.0
   const margin = height * 0.045
   const marginX = margin
@@ -315,7 +325,8 @@ async function drawTypography(
           accentColor: background.subTextColor,
           locationText: person.location,
           timezoneText: person.timezone,
-          fontScale
+          fontScale,
+          person
         }
       )
     }
@@ -386,6 +397,7 @@ interface LocationBackdropOptions {
   locationText: string
   timezoneText: string
   fontScale: number
+  person: PersonRecord
 }
 
 async function drawLocationBackdrop(
@@ -399,7 +411,8 @@ async function drawLocationBackdrop(
     accentColor,
     locationText,
     timezoneText,
-    fontScale
+    fontScale,
+    person
   }: LocationBackdropOptions
 ): Promise<void> {
   const hasLocation = locationText.trim() || timezoneText.trim()
@@ -407,7 +420,19 @@ async function drawLocationBackdrop(
 
   const locationLabel = locationText.trim()
   const timezoneLabel = timezoneText.trim()
-  const estimated = estimateCoordinates(locationText, timezoneText)
+  
+  // Use precise coordinates from cityData if available, otherwise estimate
+  if (import.meta.env.DEV) {
+    console.log('🗺️ Drawing location backdrop:', {
+      location: locationLabel,
+      hasCityData: !!person.cityData,
+      cityData: person.cityData
+    })
+  }
+  
+  const estimated = person.cityData 
+    ? { lat: person.cityData.lat, lng: person.cityData.lng }
+    : estimateCoordinates(locationText, timezoneText)
 
   const padding = Math.max(height * 0.1, 16)
   const innerWidth = Math.max(width - padding * 2, 180)
@@ -630,14 +655,49 @@ function drawFlagMarker(
 }
 
 function projectFlatPoint(lat: number, lng: number, rect: MapRect): { x: number; y: number } {
-  const clampedLat = Math.max(-85, Math.min(85, lat))
+  // SimpleMaps world.svg uses viewBox="0 0 2000 857" (aspect ratio ~2.33:1)
+  // This is an Equirectangular/Plate Carrée projection
+  // The aspect ratio of 2.33:1 (vs standard 2:1) suggests the map extends slightly beyond standard bounds
+  // or uses a modified latitude range
+  
+  // Standard Equirectangular:
+  // - Full world: -180° to +180° longitude (360°)
+  // - Full world: -90° to +90° latitude (180°)
+  // - Aspect ratio would be 360/180 = 2:1
+  
+  // But this map has 2000/857 = 2.33:1, which suggests:
+  // The latitude range might be compressed or the map extends slightly wider than ±180°
+  
+  // Normalize longitude to [-180, 180]
   const normalizedLng = ((lng + 180) % 360 + 360) % 360 - 180
+  
+  // Calculate x position (longitude: -180 = 0, 0 = 0.5, 180 = 1)
   const xRatio = (normalizedLng + 180) / 360
-  const yRatio = (90 - clampedLat) / 180
-  return {
+  
+  // For Y position: In SVG, Y=0 is at TOP, Y=max is at BOTTOM
+  // In geographic terms: North (positive lat) should be at top (small Y)
+  //                     South (negative lat) should be at bottom (large Y)
+  // 
+  // Standard Equirectangular formula:
+  // yRatio = (90 - lat) / 180
+  // This maps: lat=90 (north pole) → yRatio=0 (top)
+  //           lat=-90 (south pole) → yRatio=1 (bottom)
+  //           lat=-33.87 (Sydney) → yRatio=0.688 (about 69% down)
+  
+  const yRatio = (90 - lat) / 180
+  
+  const result = {
     x: rect.x + xRatio * rect.width,
     y: rect.y + yRatio * rect.height
   }
+  
+  // Debug logging
+  if (import.meta.env.DEV) {
+    console.log(`📍 Projecting (${lat}°, ${lng}°) → (${xRatio.toFixed(3)}, ${yRatio.toFixed(3)}) → px(${Math.round(result.x)}, ${Math.round(result.y)})`)
+    console.log(`   Expected: Sydney should be ~0.92x, ~0.69y; Toronto ~0.28x, ~0.26y`)
+  }
+  
+  return result
 }
 
 function estimateCoordinates(

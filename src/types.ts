@@ -10,6 +10,17 @@ export interface SocialLink {
   url: string
 }
 
+export interface City {
+  city: string
+  city_ascii: string
+  lat: number
+  lng: number
+  country: string
+  iso2: string
+  iso3: string
+  admin_name: string
+}
+
 export interface PersonRecord {
   id: string
   fullName: string
@@ -19,6 +30,8 @@ export interface PersonRecord {
   location: string
   timezone: string
   socialLinks: SocialLink[]
+  // Optional: selected city data for location-based features
+  cityData?: City
 }
 
 export interface LogoAsset {

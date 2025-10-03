@@ -121,9 +121,20 @@ For each person, provide:
 - **Role/Title** – Job title or position
 - **Email** – Contact email address
 - **Pronouns** – Optional (e.g., she/her, he/him, they/them)
-- **Location** – City and country (used to place map pin)
+- **Location** – City and country with **smart autocomplete** from 47,000+ cities worldwide
 - **Timezone** – For international teams
 - **Social Links** – Add LinkedIn, X (Twitter), or other profiles
+
+**🔍 City Search Features:**
+- Type any city name to see instant suggestions
+- Searchable database of 47,462 cities worldwide
+- Shows country and region for each result
+- Keyboard navigation (arrow keys, Enter, Escape)
+- Automatically places accurate map pins using real coordinates
+- **Auto-fills timezone** based on city longitude (approximate)
+- Falls back to country-level or timezone-based estimates if city not found
+
+**⏰ Timezone Note:** When you select a city from autocomplete, the timezone field is automatically populated with an estimated timezone (e.g., "UTC+9", "UTC-5") based on the city's longitude. This is a rough approximation since real timezone boundaries are complex and don't follow longitude lines perfectly. You can manually edit the timezone field if needed for precision.
 
 **Team Management:**
 - ➕ **Add Person** – Create new team member entries
@@ -228,19 +239,34 @@ The canvas rendering logic is in `src/utils/backdrop.ts`. Key functions:
 
 ## 🌍 Location Support
 
-### Supported Cities (36+)
+### Worldwide City Database
 
-San Francisco, New York, Seattle, Los Angeles, Chicago, Boston, Austin, Denver, Portland, San Diego, London, Paris, Berlin, Tokyo, Sydney, Toronto, Vancouver, Dublin, Amsterdam, Stockholm, Singapore, Hong Kong, Melbourne, Bangalore, Mumbai, São Paulo, Mexico City, Madrid, Barcelona, Copenhagen, Oslo, Brussels, Zürich, Auckland, Cape Town, Tel Aviv
+**47,462 cities** from around the globe with precise latitude/longitude coordinates. City data provided by [SimpleMaps World Cities Database](https://simplemaps.com/data/world-cities).
 
-### Supported Countries (50+)
+The autocomplete search provides:
 
-USA, UK, Canada, Germany, France, Japan, Australia, India, China, Brazil, Mexico, Spain, Italy, Netherlands, Switzerland, Sweden, Norway, Denmark, Finland, Ireland, Belgium, Austria, Poland, and more...
+- **Real-time fuzzy search** – Matches city names, countries, and regions
+- **Accurate coordinates** – Uses actual geocoding data for precise map pin placement
+- **Full coverage** – Major cities, regional centers, and smaller towns worldwide
+- **Smart ranking** – Prioritizes exact matches, then starts-with, then contains
 
-**Fallback Logic:**
-1. Exact city match → use city coordinates
-2. No city match → use country center coordinates  
-3. No country match → use timezone-based estimate
-4. Default → center of world map (0°, 0°)
+### Top Cities Included
+
+Major metropolitan areas like San Francisco, New York, Seattle, Los Angeles, Chicago, Boston, Austin, Denver, London, Paris, Berlin, Tokyo, Sydney, Toronto, Vancouver, Dublin, Amsterdam, Stockholm, Singapore, Hong Kong, Melbourne, Bangalore, Mumbai, São Paulo, Mexico City, Madrid, Barcelona, and thousands more...
+
+### Coverage by Region
+
+- **North America** – USA, Canada, Mexico
+- **Europe** – UK, Germany, France, Spain, Italy, Netherlands, Switzerland, Nordic countries, and more
+- **Asia Pacific** – Japan, China, India, Singapore, Australia, New Zealand, Korea, Thailand, Vietnam
+- **Latin America** – Brazil, Argentina, Chile, Colombia, Peru
+- **Middle East & Africa** – UAE, Israel, South Africa, Egypt, Nigeria
+
+**Coordinate Resolution:**
+1. **City autocomplete selected** → Uses precise city coordinates (±0.01° accuracy)
+2. **Manual text entry** → Attempts keyword matching against city/country database
+3. **No match found** → Uses timezone offset to estimate longitude
+4. **All else fails** → Center of world map (0°, 0°)
 
 ---
 
@@ -276,6 +302,10 @@ LLMAsAService offers a complete LLM gateway platform with full conversation logg
 ## 📄 License
 
 This project is open source. See the repository for license details.
+
+### Data Attribution
+
+City coordinates data sourced from [SimpleMaps World Cities Database](https://simplemaps.com/data/world-cities) - a comprehensive, free database of world cities with geographic coordinates.
 
 ---
 

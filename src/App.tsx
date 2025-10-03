@@ -60,6 +60,15 @@ function App() {
       return
     }
 
+    if (import.meta.env.DEV) {
+      console.log('🔄 Preview useEffect triggered with person:', {
+        name: selectedPerson.fullName,
+        location: selectedPerson.location,
+        hasCityData: !!selectedPerson.cityData,
+        cityData: selectedPerson.cityData
+      })
+    }
+
     let cancelled = false
     setIsRenderingPreview(true)
     setErrorMessage(null)
