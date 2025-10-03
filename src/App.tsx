@@ -225,16 +225,31 @@ function App() {
         <div className="app-header__main">
           <h1>Zoom Backgrounder</h1>
           <p>Create professional, mirrored backgrounds for your whole team in minutes.</p>
-          <p className="app-header__github">
-            <a href="https://github.com/PredictabilityAtScale/ZoomBackgrounds" target="_blank" rel="noopener noreferrer">
-              ⭐ Open Source on GitHub
-            </a>
-          </p>
-          <p className="app-header__survey">
-            <a href="https://askpilot.io/s/eyJzdXJ2ZXlJZCI6ImU2YWUwMTk2LWI2ZmYtNDBiYi1iYTVlLWU5ZTI5MzQ3NjIwMSIsImV4cGlyZXNBdCI6MjA3NDg2NjM0ODQ2MiwiaXNzdWVyIjoiYXNrcGlsb3QiLCJwZXJtaXNzaW9ucyI6WyJyZWFkIiwicmVzcG9uZCJdLCJnZW5lcmF0ZWRBdCI6MTc1OTUwNjM0ODQ2Mn0" target="_blank" rel="noopener noreferrer">
-              📋 Short Survey: How AI is going to be used, and challenges to going live
-            </a>
-          </p>
+          <div className="app-header__links">
+            <p className="app-header__github">
+              <a href="https://github.com/PredictabilityAtScale/ZoomBackgrounds" target="_blank" rel="noopener noreferrer">
+                ⭐ Open Source on GitHub
+              </a>
+              <a 
+                href="https://founder.university/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="app-header__founder"
+              >
+                <img 
+                  src="/Founder+University+Logo+(1500+x+450+px).webp" 
+                  alt="Founder University" 
+                  className="app-header__founder-logo"
+                />
+                <span className="app-header__founder-text">Proudly Cohort 11</span>
+              </a>
+            </p>
+            <p className="app-header__survey">
+              <a href="https://askpilot.io/s/eyJzdXJ2ZXlJZCI6ImU2YWUwMTk2LWI2ZmYtNDBiYi1iYTVlLWU5ZTI5MzQ3NjIwMSIsImV4cGlyZXNBdCI6MjA3NDg2NjM0ODQ2MiwiaXNzdWVyIjoiYXNrcGlsb3QiLCJwZXJtaXNzaW9ucyI6WyJyZWFkIiwicmVzcG9uZCJdLCJnZW5lcmF0ZWRBdCI6MTc1OTUwNjM0ODQ2Mn0" target="_blank" rel="noopener noreferrer">
+                📋 Short Survey: AI use in your products, and barriers to launching
+              </a>
+            </p>
+          </div>
         </div>
         <div className="sponsor-panel">
           <p className="sponsor-panel__title">Consider checking out our products:</p>
