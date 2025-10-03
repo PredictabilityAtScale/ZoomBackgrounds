@@ -8,6 +8,7 @@ import { PeopleEditor } from './components/PeopleEditor'
 import { LogoUploader } from './components/LogoUploader'
 import { BackgroundSelector } from './components/BackgroundSelector'
 import { BackdropPreview } from './components/BackdropPreview'
+import { Instructions } from './components/Instructions'
 import {
   generateBackdropBlob,
   generateBackdropDataUrl
@@ -229,9 +230,14 @@ function App() {
               ⭐ Open Source on GitHub
             </a>
           </p>
+          <p className="app-header__survey">
+            <a href="https://askpilot.io/s/eyJzdXJ2ZXlJZCI6ImU2YWUwMTk2LWI2ZmYtNDBiYi1iYTVlLWU5ZTI5MzQ3NjIwMSIsImV4cGlyZXNBdCI6MjA3NDg2NjM0ODQ2MiwiaXNzdWVyIjoiYXNrcGlsb3QiLCJwZXJtaXNzaW9ucyI6WyJyZWFkIiwicmVzcG9uZCJdLCJnZW5lcmF0ZWRBdCI6MTc1OTUwNjM0ODQ2Mn0" target="_blank" rel="noopener noreferrer">
+              📋 Short Survey: How AI is going to be used, and challenges to going live
+            </a>
+          </p>
         </div>
         <div className="sponsor-panel">
-          <p className="sponsor-panel__title">Offered free, consider our products:</p>
+          <p className="sponsor-panel__title">Consider checking out our products:</p>
           <div className="sponsor-panel__items">
             <a href="https://usagetap.com" target="_blank" rel="noopener noreferrer" className="sponsor-item">
               <img src="/usage-tap-logo.svg" alt="UsageTap" className="sponsor-item__logo" />
@@ -249,22 +255,12 @@ function App() {
         </div>
       </header>
 
-      <main className="app-layout">
-        <div className="app-layout__left">
-          <CompanyForm value={company} onChange={setCompany} />
-          <LogoUploader value={logo} onChange={setLogo} />
-          <BackgroundSelector
-            selectedId={background?.id ?? ''}
-            onChange={setBackgroundId}
-          />
+      {/* Preview Section - Top */}
+      <section className="preview-section">
+        <div className="preview-section__left">
+          <Instructions />
         </div>
-        <div className="app-layout__right">
-          <PeopleEditor
-            value={people}
-            onChange={handlePeopleChange}
-            selectedId={selectedPerson?.id ?? ''}
-            onSelect={setSelectedPersonId}
-          />
+        <div className="preview-section__right">
           <BackdropPreview
             dataUrl={previewUrl}
             isGenerating={isRenderingPreview}
@@ -281,6 +277,26 @@ function App() {
             selectedPersonLabel={selectedPerson?.fullName ?? 'Selected person'}
             onDownloadSelected={handleDownloadSelected}
             onDownloadAll={handleDownloadAll}
+          />
+        </div>
+      </section>
+
+      {/* Configuration Section - Bottom */}
+      <main className="app-layout">
+        <div className="app-layout__left">
+          <CompanyForm value={company} onChange={setCompany} />
+          <LogoUploader value={logo} onChange={setLogo} />
+          <BackgroundSelector
+            selectedId={background?.id ?? ''}
+            onChange={setBackgroundId}
+          />
+        </div>
+        <div className="app-layout__right">
+          <PeopleEditor
+            value={people}
+            onChange={handlePeopleChange}
+            selectedId={selectedPerson?.id ?? ''}
+            onSelect={setSelectedPersonId}
           />
         </div>
       </main>
