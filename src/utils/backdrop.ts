@@ -26,44 +26,38 @@ export async function generateBackdropDataUrl(
   const baseCanvas = document.createElement('canvas')
   baseCanvas.width = width
   baseCanvas.height = height
-
   const baseCtx = baseCanvas.getContext('2d')
-  if (!baseCtx) {
-    throw new Error('Unable to access canvas context')
-  }
+  if (!baseCtx) throw new Error('Unable to access canvas context')
 
   await ensureFontsReady()
-
   paintGradient(baseCtx, input.background, width, height)
 
-  // Draw logo first if present
+  // Draw logo & collect company start Y
   let companyStartY = height * 0.045
   if (input.logo) {
     const logoBottom = await drawLogo(baseCtx, input.logo, input.logoScale ?? 1.0, width, height)
-    companyStartY = logoBottom + 12 // Add gap after logo
+    companyStartY = logoBottom + 12
   }
 
-  // Always render with standard layout (mirror: false)
   const standardInput = { ...input, mirror: false }
   await drawTypography(baseCtx, standardInput, width, height, companyStartY)
+
+  if (input.person.causes && input.person.causes.length > 0) {
+    drawCausesRow(baseCtx, input.person.causes, width, height)
+  }
 
   if (!shouldMirror) {
     return baseCanvas.toDataURL('image/png', 1)
   }
 
-  // Flip the entire canvas for mirrored version
   const mirroredCanvas = document.createElement('canvas')
   mirroredCanvas.width = width
   mirroredCanvas.height = height
   const mirroredCtx = mirroredCanvas.getContext('2d')
-  if (!mirroredCtx) {
-    throw new Error('Unable to access mirrored canvas context')
-  }
-
+  if (!mirroredCtx) throw new Error('Unable to access mirrored canvas context')
   mirroredCtx.translate(width, 0)
   mirroredCtx.scale(-1, 1)
   mirroredCtx.drawImage(baseCanvas, 0, 0)
-
   return mirroredCanvas.toDataURL('image/png', 1)
 }
 
@@ -438,8 +432,8 @@ async function drawLocationBackdrop(
   const innerWidth = Math.max(width - padding * 2, 180)
   const aspectRatio = 2.2
 
-  let mapWidth = Math.min(innerWidth * 0.5, width * 0.38)
-  let mapHeight = mapWidth / aspectRatio
+  const mapWidth = Math.min(innerWidth * 0.5, width * 0.38)
+  const mapHeight = mapWidth / aspectRatio
 
   const textSpacing = Math.max(padding * 0.4, 12)
   const minTextBlock =
@@ -968,4 +962,105 @@ function loadImage(source: string): Promise<HTMLImageElement> {
     img.onerror = () => reject(new Error('Failed to load image asset'))
     img.src = source
   })
+}
+
+interface CauseLike { id: string; name: string }
+
+function drawCausesRow(
+  ctx: CanvasRenderingContext2D,
+  causes: CauseLike[],
+  width: number,
+  height: number
+): void {
+  if (!causes.length) return
+  const marginX = Math.round(height * 0.04)
+  const paddingBottom = Math.round(height * 0.028)
+  const leftThirdWidth = width / 3
+  const usableWidth = leftThirdWidth - marginX * 1.2
+  const baseFontSize = Math.max(11, Math.round(height * 0.016))
+  const labelFontSize = Math.max(12, Math.round(baseFontSize * 0.95))
+  const pillFontSize = baseFontSize
+  const gapX = Math.max(8, Math.round(width * 0.005))
+  const gapY = Math.round(pillFontSize * 0.6)
+  // NOTE: Background gradient/fill removed per request to "remove the background fill for the Supports section".
+  // Previously there was a vertical fade + horizontal feather here to darken the lower-left third behind the causes.
+  // We keep ctx.save()/restore() semantics for future extensibility, but omit any backdrop painting.
+  ctx.save()
+  const fadeHeight = Math.round(height * 0.11) // retained for vertical positioning math below
+
+  // Row 1: Plain text label (no pill)
+  const label = 'I SUPPORT'
+  ctx.font = `700 ${labelFontSize}px "Inter", "Segoe UI", sans-serif`
+  ctx.textBaseline = 'alphabetic'
+  ctx.textAlign = 'left'
+  const labelX = marginX
+  // Place label a bit above the pills area: align similar vertical anchor as before but simpler
+  const labelBottom = height - paddingBottom - fadeHeight * 0.55
+  const labelHeight = labelFontSize * 1.1
+  // Shift label slightly higher to reserve space for an extra row of pills (now allowing up to 3 rows)
+  const labelY = labelBottom - fadeHeight * 0.42 - labelHeight
+  ctx.fillStyle = 'rgba(255,255,255,0.9)'
+  ctx.fillText(label, labelX, labelY + labelFontSize)
+
+  // Row 2+: Wrapped pills below label, top aligned under it
+  ctx.font = `600 ${pillFontSize}px "Inter", "Segoe UI", sans-serif`
+  ctx.textBaseline = 'middle'
+  ctx.textAlign = 'left'
+  const startY = labelY + labelHeight + gapY
+  let cursorX = marginX
+  let cursorY = startY
+  const maxY = height - paddingBottom
+
+  // Allow up to 3 rows of pills (previously implicit). We enforce an upper bound for layout stability.
+  const MAX_ROWS = 3
+  let rowCount = 1 // current row (start at first row)
+  for (const cause of causes.slice(0, 36)) { // allow a few more to possibly fill 3 rows
+    const display = fitPillText(ctx, cause.name, Math.min(usableWidth * 0.9, 300))
+    const textWidth = ctx.measureText(display).width
+    const padX = Math.max(10, Math.round(pillFontSize * 0.75))
+    const padY = Math.round(pillFontSize * 0.6)
+    const pillHeight = pillFontSize + padY * 2
+    const pillWidth = textWidth + padX * 2
+    if (pillWidth > usableWidth) continue
+    // Wrap logic
+    if (cursorX + pillWidth > marginX + usableWidth) {
+      cursorX = marginX
+      cursorY += pillHeight + gapY
+      rowCount += 1
+      if (rowCount > MAX_ROWS) break
+    }
+    if (cursorY + pillHeight > maxY) break
+    const r = pillHeight / 2
+    const pillY = cursorY
+    ctx.beginPath()
+    ctx.moveTo(cursorX + r, pillY)
+    ctx.lineTo(cursorX + pillWidth - r, pillY)
+    ctx.quadraticCurveTo(cursorX + pillWidth, pillY, cursorX + pillWidth, pillY + r)
+    ctx.lineTo(cursorX + pillWidth, pillY + pillHeight - r)
+    ctx.quadraticCurveTo(cursorX + pillWidth, pillY + pillHeight, cursorX + pillWidth - r, pillY + pillHeight)
+    ctx.lineTo(cursorX + r, pillY + pillHeight)
+    ctx.quadraticCurveTo(cursorX, pillY + pillHeight, cursorX, pillY + pillHeight - r)
+    ctx.lineTo(cursorX, pillY + r)
+    ctx.quadraticCurveTo(cursorX, pillY, cursorX + r, pillY)
+    ctx.closePath()
+    ctx.fillStyle = 'rgba(255,255,255,0.16)'
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)'
+    ctx.lineWidth = 1
+    ctx.fill()
+    ctx.stroke()
+    ctx.fillStyle = 'rgba(255,255,255,0.9)'
+    ctx.fillText(display, cursorX + padX, pillY + pillHeight / 2 + 1)
+    cursorX += pillWidth + gapX
+  }
+
+  ctx.restore()
+}
+
+function fitPillText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
+  if (ctx.measureText(text).width <= maxWidth) return text
+  let truncated = text
+  while (truncated.length > 3 && ctx.measureText(truncated + '…').width > maxWidth) {
+    truncated = truncated.slice(0, -1)
+  }
+  return truncated + '…'
 }

@@ -57,7 +57,7 @@ export function Instructions() {
       </div>
 
       <div className="instructions-tip">
-        <strong>💡 Pro Tip:</strong> Use mirrored versions for Zoom/Teams so text appears correctly.
+        <strong>💡 Pro Tip:</strong> Check your Zoom Settings-Video & Effects "Mirror my video" setting. If ON Use mirrored versions so text appears correctly.
       </div>
     </div>
   )

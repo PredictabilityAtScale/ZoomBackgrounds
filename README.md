@@ -309,7 +309,45 @@ City coordinates data sourced from [SimpleMaps World Cities Database](https://si
 
 ---
 
-## 🙏 Contributing
+## � Optional Causes / Charities Section
+
+Each teammate can optionally attach a personal set of causes. In their card, add up to 10 charities (preset or custom). The generated background shows a subtle "I SUPPORT" label followed by semi-transparent pills containing the (possibly truncated) full organization names. Short codes are still used internally for custom entries, but the display favors readable names.
+
+Why no logos?
+- Trademarks and branding guidelines vary by organization.
+- Keeping this minimal avoids unintended misuse of protected marks.
+- Text short codes are recognizable while remaining neutral and lightweight.
+
+If you want to add official marks globally or per-person:
+1. Review each organization's usage/brand guidelines.
+2. Get permission where required.
+3. Store approved monochrome SVGs locally in `public/causes/`.
+4. Extend `CauseInfo` with a `logoPath` property.
+5. Update `drawCausesRow` in `src/utils/backdrop.ts` to render images (respect max height ~32px @1080p).
+
+Rendering guidelines (current implementation):
+- Max ~10 causes; extras ignored to preserve clarity.
+- Gradient fade behind pills for contrast.
+- Semi-transparent background (≈14%) + subtle border (≈28%).
+- Uppercase short code centered; no wrapping.
+
+Disclaimer: Organization names/short codes belong to their respective owners. Inclusion does not imply endorsement.
+
+Current capabilities:
+- Per-person selection from a curated preset list.
+- Custom cause codes & optional names (full name shown if provided, truncated for width).
+- Automatic truncation with ellipsis to preserve layout.
+- Click any pill in the editor to remove it.
+
+Future enhancements (open to PRs):
+- Reordering via drag + drop.
+- Persistence of custom causes across sessions (localStorage sync).
+- Monochrome SVG logo rendering with automatic contrast adaptation.
+- Hover tooltips in preview listing full organization names & links.
+
+---
+
+## �🙏 Contributing
 
 Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests on GitHub.
 

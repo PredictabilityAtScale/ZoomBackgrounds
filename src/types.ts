@@ -32,6 +32,8 @@ export interface PersonRecord {
   socialLinks: SocialLink[]
   // Optional: selected city data for location-based features
   cityData?: City
+  // Optional: per-person supported causes (full names only)
+  causes?: CauseInfo[]
 }
 
 export interface LogoAsset {
@@ -71,4 +73,12 @@ export interface BackdropRenderInput {
   fontScale?: number
   logoScale?: number
   mapScale?: number
+}
+
+// Causes / Charities (text-only placeholder representation)
+export interface CauseInfo {
+  id: string
+  name: string
+  url?: string
+  category?: string
 }

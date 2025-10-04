@@ -1,4 +1,5 @@
-import type { CompanyInfo, PersonRecord, SocialLink, LogoAsset } from "../types";
+import type { CompanyInfo, PersonRecord, SocialLink, LogoAsset, CauseInfo } from "../types";
+import { popularCauses } from "./causes";
 
 const createId = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -52,6 +53,11 @@ export const defaultPeople: PersonRecord[] = [
       ["LinkedIn", "https://www.linkedin.com/in/troymagennis"],
       ["X", "https://x.com/t_magennis"],
     ]),
+    // Pre-selected causes requested
+    causes: ((): CauseInfo[] => {
+      const wanted = new Set(["red-cross", "unhcr"]);
+      return popularCauses.filter(c => wanted.has(c.id));
+    })()
   },
   {
     id: createId(),

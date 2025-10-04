@@ -1,8 +1,9 @@
 import type { ChangeEvent } from 'react'
 import { useMemo } from 'react'
-import type { PersonRecord, SocialLink, City } from '../types'
+import type { PersonRecord, SocialLink, City, CauseInfo } from '../types'
 import { CitySearch } from './CitySearch'
 import { TimezoneSelector } from './TimezoneSelector'
+import { PersonCausesEditor } from './PersonCausesEditor'
 
 interface PeopleEditorProps {
   value: PersonRecord[]
@@ -11,7 +12,8 @@ interface PeopleEditorProps {
   onSelect: (id: string) => void
 }
 
-const baseFieldKeys: Array<keyof Omit<PersonRecord, 'id' | 'socialLinks' | 'cityData'>> = [
+// Exclude complex / non-text fields like socialLinks, cityData, causes
+const baseFieldKeys: Array<keyof Omit<PersonRecord, 'id' | 'socialLinks' | 'cityData' | 'causes'>> = [
   'fullName',
   'role',
   'email',
@@ -313,6 +315,12 @@ export function PeopleEditor({
                     </div>
                   ))}
                 </div>
+                <PersonCausesEditor
+                  value={person.causes as CauseInfo[] | undefined}
+                  onChange={(next) => {
+                    onChange(value.map(p => p.id === person.id ? { ...p, causes: next } : p))
+                  }}
+                />
               </div>
             </article>
           )

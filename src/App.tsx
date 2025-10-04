@@ -174,13 +174,13 @@ function App() {
         // Add standard version
         const standardBlob = await generateBackdropBlob({
           person,
-          company,
-          background,
-          logo,
-          mirror: false,
-          fontScale,
-          logoScale,
-          mapScale
+            company,
+            background,
+            logo,
+            mirror: false,
+            fontScale,
+            logoScale,
+            mapScale
         })
         zip.file(
           buildFileName(person, company, background.name, false),
@@ -190,13 +190,13 @@ function App() {
         // Add mirrored version
         const mirroredBlob = await generateBackdropBlob({
           person,
-          company,
-          background,
-          logo,
-          mirror: true,
-          fontScale,
-          logoScale,
-          mapScale
+            company,
+            background,
+            logo,
+            mirror: true,
+            fontScale,
+            logoScale,
+            mapScale
         })
         zip.file(
           buildFileName(person, company, background.name, true),
@@ -317,7 +317,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>Tip: Downloads include both standard and mirrored versions. Use mirrored for Zoom/Teams so text appears correct when you see yourself.</p>
+        <p>Tip: Downloads include both standard and mirrored versions. Use mirrored for Zoom/Teams so text appears correct when you see yourself if you have "Mirror my image" setting on.</p>
         <p className="app-footer__branding">
           <strong>zoombackgrounder.com</strong> - Create professional backgrounds for your team
         </p>
